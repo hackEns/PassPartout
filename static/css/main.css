@@ -1,0 +1,27 @@
+body {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+input[readonly] {
+	border:none;
+}
+
+.text-hidden {
+    color:red;
+    background:red;
+    border:none;
+}
+.text-hidden::-moz-selection {
+    background:red;
+}
+.text-hidden::selection {
+    background:red;
+}

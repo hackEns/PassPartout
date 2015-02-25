@@ -1,4 +1,4 @@
-var db_url = "db.txt";
+var db_url = "static/db.txt";
 var raw_database = undefined;
 var database = undefined;
 
