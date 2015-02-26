@@ -28,6 +28,13 @@ def init_db(app):
 		last_name = db.Column(db.String(100), nullable=False, server_default='')
 
 		roles = db.relationship('Role', secondary='user_roles')
+		# FIXME: really not good performance wise
+		def is_admin(self):
+			for r in self.roles:
+				if r.name == "hacker":
+					return True
+			return False
+
 
 	# Define UserRoles model
 	class UserRoles(db.Model):

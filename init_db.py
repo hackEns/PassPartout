@@ -16,6 +16,6 @@ user = User(username='root', active=True,
 hacker = Role(name='hacker')
 user.roles.append(hacker)
 
-db.session.add(user)
 db.session.add(hacker)
+db.session.add(user)
 db.session.commit()

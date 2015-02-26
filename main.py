@@ -1,8 +1,8 @@
 import os
 import subprocess
-from flask import Flask, render_template_string, render_template, request
+from flask import Flask, render_template_string, render_template, request, redirect
 from flask_mail import Mail
-from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter, roles_required
+from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter, roles_required, current_user
 
 from db import init_db
 
@@ -52,27 +52,76 @@ def create_app():
 	@app.route('/')
 	@login_required
 	def home_page():
-		return render_template("index.html")
+		return render_template("index.html", current_user=current_user)
 	
-	@app.route('/grid', methods=["POST"])
+	# The Home page is accessible to anyone
+	@app.route('/keyring/<name>')
 	@login_required
-	@roles_required('admin')
+	def keyring(name):
+		found = False
+		for r in current_user.roles:
+			found = found or r.name == name
+		if not found:
+			return "Not authorized"
+		return render_template("keyring.html", keyring=name)
+	
+	@app.route('/grid', methods=["POST", "GET"])
+	@login_required
+	@roles_required('hacker')
 	def grid():
-		return ""
+		print(dir(current_user))
+		if request.method == "POST":
+			user = db.session.query(User).filter(User.id==request.form["user"]).first()
+			role = db.session.query(Role).filter(Role.id==request.form["role"]).first()
+			if "val" in request.form and request.form["val"] == "on":
+				user.roles.append(role)
+			else:
+				if role in user.roles:
+					user.roles.remove(role)
+			db.session.commit()
+		return render_template("grid.html", users=db.session.query(User), roles=db.session.query(Role))
+	
+	@app.route('/new', methods=["POST", "GET"])
+	@login_required
+	@roles_required('hacker')
+	def new():
+		if request.method == "POST":
+			rolename = request.form["role"]
+			if not db.session.query(Role).filter(Role.name==rolename).first():
+				new_role = Role(name=rolename)
+				db.session.add(new_role)
+				current_user.roles.append(new_role)
+				db.session.commit()
+				
+				save(rolename, True)
+
+				return redirect("/grid")
+		return render_template("create.html", users=db.session.query(User), roles=db.session.query(Role))
+	
 	
 
-	@app.route('/save', methods=["POST"])
+	@app.route('/save/<name>', methods=["POST"])
 	@login_required
-	def save():
-		if subprocess.call(["git", "add", "db.txt"], cwd="db/") != 0:
+	def save(name, initial = False):
+		found = False
+		for r in current_user.roles:
+			found = found or r.name == name
+		if not found:
+			return "Not authorized"
+		if initial:
+			if subprocess.call(["touch", name + ".txt"], cwd="db/") != 0:
+				print("Keyring already exists??")
+				return "error"
+
+		if subprocess.call(["git", "add", name + ".txt"], cwd="db/") != 0:
 			print("git error")
 			return "error"
 		subprocess.call(["git", "commit", "-m", "commit pre-web-update"], cwd="db/")
 
-		with open("db/db.txt", "w") as f:
+		with open("db/" + name + ".txt", "w") as f:
 			f.write(request.form["data"])
 			f.close()
-		if subprocess.call(["git", "add", "db.txt"], cwd="db/") != 0:
+		if subprocess.call(["git", "add", name + ".txt"], cwd="db/") != 0:
 			print("git error")
 			return "error"
 		if subprocess.call(["git", "commit", "-m", "Web update"], cwd="db/") != 0:
@@ -80,11 +129,19 @@ def create_app():
 			return "error"
 		return "done"
 	
-	@app.route('/get')
+	@app.route('/get/<name>')
 	@login_required
-	def get():
-		with open("db/db.txt", "r") as f:
-			return f.read()
+	def get(name):
+		found = False
+		for r in current_user.roles:
+			found = found or r.name == name
+		if not found:
+			return "Not authorized"
+		try:
+			with open("db/" + name + ".txt", "r") as f:
+				return f.read()
+		except FileNotFoundError:
+			return "{}"
 
 	return app
 
@@ -92,4 +149,4 @@ def create_app():
 # Start development web server
 if __name__=='__main__':
 	app = create_app()
-	app.run(host='localhost', port=5000, debug=True)
+	app.run(host='0.0.0.0', port=5000, debug=False)

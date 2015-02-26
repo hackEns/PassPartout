@@ -1,4 +1,5 @@
-db_url = "/get"
+db_url = "/get/" + keyring
+db_push = "/save/" + keyring
 database = undefined
 
 sjcl.random.startCollectors()
@@ -49,8 +50,7 @@ send_via_post  = (url, data, feedback, error) ->
 
 save = (cb) ->
 	data = cipher password, window.database
-	console.log (decipher password, data)
-	send_via_post "/save", data, (success) ->
+	send_via_post db_push, data, (success) ->
 			console.log "ok"
 			if cb
 				cb()

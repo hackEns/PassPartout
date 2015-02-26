@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+	<table>
+		<tr>
+			<td>Username</td>
+			{% for r in roles %}
+				<td>{{ r.name }}</td>
+			{% endfor %}
+		</tr>
+		{% for i in users %}
+		<tr>
+			<td>
+			{{ i.username }}
+			</td>
+			{% for r in roles %}
+				<td>
+				<form class="grid-form" action="{{ url_for("grid") }}" method="POST">
+				<input type="hidden" value="{{ r.id }}" name="role" />
+				<input type="hidden" value="{{ i.id }}" name="user" />
+				{% if r in i.roles %}
+				<input type="checkbox" checked="checked" name="val" />
+				{% else %}
+				<input type="checkbox" name="val" />
+				{% endif %}
+				</form>
+				</td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+</main>
+
+<script type="text/javascript" src="/static/js/grid.js" ></script>
+{% endblock %}
+

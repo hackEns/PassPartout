@@ -13,6 +13,12 @@
         <div class="pull-left"><a href="/"><h1 class="no-margins">PassManager</h1></a></div>
         <div class="pull-right">
             {% if current_user.is_authenticated() %}
+			{% if current_user.is_admin() %}
+                <a href="{{ url_for('new') }}">New</a>
+                &nbsp; | &nbsp;
+                <a href="{{ url_for('grid') }}">Grid</a>
+                &nbsp; | &nbsp;
+			{% endif %}
                 <a href="{{ url_for('user.profile') }}">{{ current_user.username }}</a>
                 &nbsp; | &nbsp;
                 <a href="{{ url_for('user.logout') }}">Sign out</a>
@@ -46,7 +52,10 @@
         {%- endwith %}
     {% endblock %}
 
-    {% block main %}{% block content %}{% endblock %}{% endblock %}
+    {% block main %}
+	<p id="info-p"></p>
+	{% block content %}{% endblock %}
+	{% endblock %}
     </div>
 
     {% endblock %}

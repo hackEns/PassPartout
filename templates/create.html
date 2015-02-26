@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+	<form id="new-form" action="/new" method="POST">
+		<p><label for="">Keyring : </label><input type="text" name="role" /></p>
+		<p><label for="main-pass-input">Password: </label><input type="password" name="main-pass-input" id="main-pass-input"/></p>
+		<input type="hidden" id="data-hidden" name="data" />
+		<p><input type="submit"/></p>
+	</form>
+</main>
+<script type="text/javascript" src="/static/js/sjcl.js"></script>
+<script type="text/javascript" src="/static/js/create.js"></script>
+{% endblock %}
