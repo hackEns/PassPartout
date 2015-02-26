@@ -91,7 +91,7 @@ buildTableView = () ->
 		l.edited = false
 		l.getElementsByClassName("edit-a")[0].addEventListener "click", do (l,e) -> (evt) ->
 			if l.edited
-				element.setAttribute("disabled", null) for element in l.getElementsByTagName("input")
+				element.setAttribute("readonly", null) for element in l.getElementsByTagName("input")
 				for input in l.getElementsByTagName("input")
 					if input.name == "website"
 						e.website = input.value
@@ -100,7 +100,7 @@ buildTableView = () ->
 				save () ->
 					this.innerHTML = "Saved"
 			else
-				element.removeAttribute("disabled") for element in l.getElementsByTagName("input")
+				element.removeAttribute("readonly") for element in l.getElementsByTagName("input")
 				this.innerHTML = "Ok"
 			l.edited = !l.edited
 

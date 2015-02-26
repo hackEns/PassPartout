@@ -105,7 +105,7 @@
             ref1 = l.getElementsByTagName("input");
             for (j = 0, len1 = ref1.length; j < len1; j++) {
               element = ref1[j];
-              element.setAttribute("disabled", null);
+              element.setAttribute("readonly", null);
             }
             ref2 = l.getElementsByTagName("input");
             for (k = 0, len2 = ref2.length; k < len2; k++) {
@@ -124,7 +124,7 @@
             ref3 = l.getElementsByTagName("input");
             for (m = 0, len3 = ref3.length; m < len3; m++) {
               element = ref3[m];
-              element.removeAttribute("disabled");
+              element.removeAttribute("readonly");
             }
             this.innerHTML = "Ok";
           }

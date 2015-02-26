@@ -20,6 +20,8 @@ class ConfigClass(object):
 	MAIL_SERVER =			 os.getenv('MAIL_SERVER',		  'smtp.gmail.com')
 	MAIL_PORT =		   int(os.getenv('MAIL_PORT',			'465'))
 	MAIL_USE_SSL =		int(os.getenv('MAIL_USE_SSL',		 True))
+	USER_ENABLE_CONFIRM_EMAIL = False
+	USER_ENABLE_REGISTRATION = True
 
 	# Flask-User settings
 	USER_APP_NAME		= "Appppp"				# Used by email templates
@@ -93,15 +95,26 @@ def create_app():
 	@app.route('/save', methods=["POST"])
 	@login_required
 	def save():
-		with open("db.txt", "w") as f:
+		if subprocess.call(["git", "add", "db.txt"], cwd="db/") != 0:
+			print("git error")
+			return "error"
+		subprocess.call(["git", "commit", "-m", "commit pre-web-update"], cwd="db/")
+
+		with open("db/db.txt", "w") as f:
 			f.write(request.form["data"])
 			f.close()
+		if subprocess.call(["git", "add", "db.txt"], cwd="db/") != 0:
+			print("git error")
+			return "error"
+		if subprocess.call(["git", "commit", "-m", "Web update"], cwd="db/") != 0:
+			print("git error")
+			return "error"
 		return "done"
 	
 	@app.route('/get')
 	@login_required
 	def get():
-		with open("db.txt", "r") as f:
+		with open("db/db.txt", "r") as f:
 			return f.read()
 
 	return app
