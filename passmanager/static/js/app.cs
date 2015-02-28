@@ -32,6 +32,9 @@ get_url  = (url, feedback, error) ->
 				error()
 	req.send(null)
 
+random_password = () ->
+	Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 12)
+
 send_via_post  = (url, data, feedback, error) ->
 	req = new XMLHttpRequest()
 	req.open('POST', url, true)
@@ -50,6 +53,7 @@ send_via_post  = (url, data, feedback, error) ->
 
 save = (cb) ->
 	data = cipher password, window.database
+	console.log window.database
 	send_via_post db_push, data, (success) ->
 			console.log "ok"
 			if cb
@@ -73,6 +77,7 @@ buildTableView = () ->
 				<table>\
 					<tr>\
 						<th>Site</th>\
+						<th>Username</th>\
 						<th>Password</th>\
 						<th>Edit</th>\
 						<th>Delete</th>\
@@ -82,23 +87,33 @@ buildTableView = () ->
 
 	for e in window.database
 		l = document.createElement "tr"
-		l.innerHTML = "<form><tr>\
+		l.innerHTML = "<tr>\
 					<td><input readonly name='website' type=\"text\" value=\"" + e.website + "\" /></td>\
+					<td><input readonly name='username' type=\"text\" value=\"" + e.username + "\" /></td>\
 					<td><input readonly name='password' class='text-hidden' type=\"text\" value=\"" + e.password + "\" /></td>\
 					<td><button class=\"edit-a\">Edit</button></td>\
 					<td><button class=\"delete-a\">Delete</button></td>\
-				</tr></form>"
+				</tr>"
 		l.edited = false
+		for input_element in l.getElementsByTagName("input")
+			input_element.addEventListener "keypress", do (l) -> (evt) ->
+				if evt.keyCode == 13
+					l.getElementsByClassName("edit-a")[0].click()
 		l.getElementsByClassName("edit-a")[0].addEventListener "click", do (l,e) -> (evt) ->
 			if l.edited
 				element.setAttribute("readonly", null) for element in l.getElementsByTagName("input")
 				for input in l.getElementsByTagName("input")
+					# FIXME: I'm sure there is a way to do this automatically
 					if input.name == "website"
 						e.website = input.value
 					if input.name == "password"
 						e.password = input.value
+					if input.name == "username"
+						e.username = input.value
+				btn = this
 				save () ->
-					this.innerHTML = "Saved"
+					btn.innerHTML = "Saved"
+					console.log "done"
 			else
 				element.removeAttribute("readonly") for element in l.getElementsByTagName("input")
 				this.innerHTML = "Ok"
@@ -115,7 +130,8 @@ buildTableView = () ->
 	newpass = document.createElement("tr")
 	newpass.innerHTML = "<form>\
 			<td><input name='website' type='text' placeholder='Website' /></td>\
-			<td><input name='password' type='text' value='aaaa' /></td>\
+			<td><input name='username' type='text' placeholder='Username' /></td>\
+			<td><input name='password' type='text' value='" + random_password() + "' /></td>\
 			<td><button class=\"add\">Add</button></td>\
 		</form>"
 	table.appendChild newpass
@@ -124,6 +140,8 @@ buildTableView = () ->
 		for input in newpass.getElementsByTagName("input")
 			if input.name == "website"
 				e.website = input.value
+			if input.name == "username"
+				e.username = input.value
 			if input.name == "password"
 				e.password = input.value
 		console.log(window.database)
@@ -163,8 +181,6 @@ document.getElementById("main-pass-form").addEventListener "submit", (evt) ->
 
 	# Download the passwords database
 	get_url db_url, (data) ->
-			console.log data
-			console.log "here"
 			try
 				console.log window.database
 				window.database = decipher(document.getElementById("main-pass-input").value, data)

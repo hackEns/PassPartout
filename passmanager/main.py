@@ -11,7 +11,7 @@ from passmanager.db import init_db
 class ConfigClass(object):
 	# Flask settings
 	SECRET_KEY =			  os.getenv('SECRET_KEY',	   'THIS IS AN INSECURE SECRET')
-	SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',	 'sqlite:///users.sqlite')
+	SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',	 'sqlite:///../users.sqlite')
 	CSRF_ENABLED = True
 
 	# Flask-Mail settings
