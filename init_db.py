@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from db import init_db
+from passmanager.db import init_db
 from flask import Flask
 from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter
-import main
+from passmanager import main
 
 app = Flask("main")
 app.config.from_object(main.ConfigClass)

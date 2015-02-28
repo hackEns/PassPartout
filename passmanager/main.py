@@ -4,14 +4,14 @@ from flask import Flask, render_template_string, render_template, request, redir
 from flask_mail import Mail
 from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter, roles_required, current_user
 
-from db import init_db
+from passmanager.db import init_db
 
 # Use a Class-based config to avoid needing a 2nd file
 # os.getenv() enables configuration through OS environment variables
 class ConfigClass(object):
 	# Flask settings
 	SECRET_KEY =			  os.getenv('SECRET_KEY',	   'THIS IS AN INSECURE SECRET')
-	SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',	 'sqlite:///basic_app.sqlite')
+	SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',	 'sqlite:///users.sqlite')
 	CSRF_ENABLED = True
 
 	# Flask-Mail settings
@@ -146,7 +146,3 @@ def create_app():
 	return app
 
 
-# Start development web server
-if __name__=='__main__':
-	app = create_app()
-	app.run(host='0.0.0.0', port=5000, debug=False)
