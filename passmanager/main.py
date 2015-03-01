@@ -31,7 +31,7 @@ class ConfigClass(object):
 
 def create_app():
 	""" Flask application factory """
-	
+
 	# Setup Flask app and app.config
 	app = Flask(__name__)
 	app.config.from_object(__name__+'.ConfigClass')
@@ -42,7 +42,14 @@ def create_app():
 	db, user_db_adapter, User, Role = init_db(app)
 
 	# Setup Flask-User
-	user_manager = UserManager(user_db_adapter, app)	 # Initialize Flask-User
+	def password_validator(form, field):
+		password = field.data
+		if len(password) < 6:
+			raise ValidationError(_('Password must have at least 6 characters'))
+
+	user_manager = UserManager(user_db_adapter,
+	                           password_validator=my_password_validator)
+        user_manager.init_app(app)	 # Initialize Flask-User
 
 	# A flask/sqlalchemy/python bug? anyway sqlalchemy complains in a weird error without this line
 	User.query
@@ -53,7 +60,7 @@ def create_app():
 	@login_required
 	def home_page():
 		return render_template("index.html", current_user=current_user)
-	
+
 	# The Home page is accessible to anyone
 	@app.route('/keyring/<name>')
 	@login_required
@@ -64,7 +71,7 @@ def create_app():
 		if not found:
 			return "Not authorized"
 		return render_template("keyring.html", keyring=name)
-	
+
 	@app.route('/grid', methods=["POST", "GET"])
 	@login_required
 	@roles_required('hacker')
@@ -80,7 +87,7 @@ def create_app():
 					user.roles.remove(role)
 			db.session.commit()
 		return render_template("grid.html", users=db.session.query(User), roles=db.session.query(Role))
-	
+
 	@app.route('/new', methods=["POST", "GET"])
 	@login_required
 	@roles_required('hacker')
@@ -92,13 +99,13 @@ def create_app():
 				db.session.add(new_role)
 				current_user.roles.append(new_role)
 				db.session.commit()
-				
+
 				save(rolename, True)
 
 				return redirect("/grid")
 		return render_template("create.html", users=db.session.query(User), roles=db.session.query(Role))
-	
-	
+
+
 
 	@app.route('/save/<name>', methods=["POST"])
 	@login_required
@@ -128,7 +135,7 @@ def create_app():
 			print("git error")
 			return "error"
 		return "done"
-	
+
 	@app.route('/get/<name>')
 	@login_required
 	def get(name):
