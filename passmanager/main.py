@@ -6,6 +6,8 @@ from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter
 
 from passmanager.db import init_db
 
+from wtforms.validators import ValidationError
+
 # Use a Class-based config to avoid needing a 2nd file
 # os.getenv() enables configuration through OS environment variables
 class ConfigClass(object):
@@ -45,11 +47,10 @@ def create_app():
 	def password_validator(form, field):
 		password = field.data
 		if len(password) < 6:
-			raise ValidationError(_('Password must have at least 6 characters'))
+			raise ValidationError(('Password must have at least 6 characters'))
 
-	user_manager = UserManager(user_db_adapter,
-	                           password_validator=my_password_validator)
-        user_manager.init_app(app)	 # Initialize Flask-User
+	user_manager = UserManager(user_db_adapter, password_validator=password_validator)
+	user_manager.init_app(app) # Initialize Flask-User
 
 	# A flask/sqlalchemy/python bug? anyway sqlalchemy complains in a weird error without this line
 	User.query
