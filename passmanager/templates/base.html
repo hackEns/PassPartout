@@ -12,11 +12,11 @@
     <div id="header-div" class="clearfix with-margins">
         <div class="pull-left"><a href="/"><h1 class="no-margins">PassManager</h1></a></div>
         <div class="pull-right">
+        <a href="/">Home</a>
+                &nbsp; | &nbsp;
             {% if current_user.is_authenticated() %}
 			{% if current_user.is_admin() %}
-                <a href="{{ url_for('new') }}">New</a>
-                &nbsp; | &nbsp;
-                <a href="{{ url_for('grid') }}">Grid</a>
+                <a href="{{ url_for('grid') }}">Permissions</a>
                 &nbsp; | &nbsp;
 			{% endif %}
                 <a href="{{ url_for('user.profile') }}">{{ current_user.username }}</a>
@@ -26,10 +26,6 @@
                 <a href="{{ url_for('user.login') }}">Sign in</a>
             {% endif %}
     {% block menu %}
-        <a href="/">Home</a>
-        {% if current_user.is_authenticated() %}
-            &nbsp; | &nbsp; <a href="{{ url_for('user.profile') }}">User profile</a>
-        {% endif %}
     </div>
     </div>
     {% endblock %}

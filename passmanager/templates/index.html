@@ -9,6 +9,9 @@
 	{% else %}
 		(No keyring available.)
 	{% endfor %}
+		<li>
+			<a href="{{ url_for('new') }}">New</a>
+		</li>
 	</ul>
 </main>
 {% endblock %}
