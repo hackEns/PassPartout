@@ -25,17 +25,14 @@
             {% else %}
                 <a href="{{ url_for('user.login') }}">Sign in</a>
             {% endif %}
-        </div>
-    </div>
     {% block menu %}
-    <div id="menu-div" class="with-margins">
         <a href="/">Home</a>
         {% if current_user.is_authenticated() %}
             &nbsp; | &nbsp; <a href="{{ url_for('user.profile') }}">User profile</a>
         {% endif %}
     </div>
+    </div>
     {% endblock %}
-    <hr class="no-margins"/>
 
     <div id="main-div" class="with-margins">
     {# One-time system messages called Flash messages #}

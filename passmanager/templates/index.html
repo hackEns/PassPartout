@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 <main>
-	<ul>
+	<ul class="keyring-list">
 	{% for r in current_user.roles %}
 	{% if r.name != "hacker" %}
 		<li><a href="/keyring/{{ r.name }}">{{ r.name }}</a></li>
 	{% endif %}
-	</ul>
 	{% else %}
 		(No keyring available.)
 	{% endfor %}
+	</ul>
 </main>
 {% endblock %}
