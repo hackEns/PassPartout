@@ -73,8 +73,7 @@ buildTableView = () ->
 	main = document.getElementsByTagName("main")[0]
 	main.innerHTML = ""
 
-	main.innerHTML += "<p><a href=\"\" id=\"add-a\">New password</a></p>\
-				<table>\
+	main.innerHTML += "<table>\
 					<tr>\
 						<th>Site</th>\
 						<th>Username</th>\
@@ -157,11 +156,6 @@ buildTableView = () ->
 			this.select()
 
 
-	# Bind events
-	document.getElementById("add-a").addEventListener "click", (evt) ->
-		evt.preventDefault()
-		buildAddView()
-
 
 # Build the add a new password view
 buildAddView = () ->
@@ -181,10 +175,11 @@ document.getElementById("main-pass-form").addEventListener "submit", (evt) ->
 
 	# Download the passwords database
 	get_url db_url, (data) ->
+			console.log "in"
 			try
 				console.log window.database
-				window.database = decipher(document.getElementById("main-pass-input").value, data)
 				password = document.getElementById("main-pass-input").value
+				window.database = decipher(password, data)
 				buildTableView()
 			catch err
 				console.log(err)

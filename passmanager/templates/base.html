@@ -10,7 +10,8 @@
 <body>
     {% block body %}
     <div id="header-div" class="clearfix with-margins">
-        <div class="pull-left"><a href="/"><h1 class="no-margins">PassManager</h1></a></div>
+		<div class="wrapper">
+        <div class="pull-left"><a href="/"><img src="{{ url_for('static', filename='img/logo.png') }}" /></a></div>
         <div class="pull-right">
         <a href="/">Home</a>
                 &nbsp; | &nbsp;
@@ -27,10 +28,11 @@
             {% endif %}
     {% block menu %}
     </div>
+	</div>
     </div>
     {% endblock %}
 
-    <div id="main-div" class="with-margins">
+    <div id="main-div" class="wrapper">
     {# One-time system messages called Flash messages #}
     {% block flash_messages %}
         {%- with messages = get_flashed_messages(with_categories=true) -%}
