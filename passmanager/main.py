@@ -77,7 +77,6 @@ def create_app():
 	@login_required
 	@roles_required('hacker')
 	def grid():
-		print(dir(current_user))
 		if request.method == "POST":
 			user = db.session.query(User).filter(User.id==request.form["user"]).first()
 			role = db.session.query(Role).filter(Role.id==request.form["role"]).first()
