@@ -7,11 +7,13 @@
 		<li><a href="/keyring/{{ r.name }}">{{ r.name }}</a></li>
 	{% endif %}
 	{% else %}
-		(No keyring available.)
+		<li>(No keyring available.)</li>
 	{% endfor %}
+	{% if current_user.is_admin() %}
 		<li>
 			<a href="{{ url_for('new') }}">New</a>
 		</li>
+	{% endif %}
 	</ul>
 </main>
 {% endblock %}
