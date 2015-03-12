@@ -93,7 +93,7 @@
   };
 
   buildTableView = function() {
-    var e, el, input_element, l, main, newpass, table, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _results;
+    var e, el, input_element, l, main, newpass, table, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _results;
     main = document.getElementsByTagName("main")[0];
     main.innerHTML = "";
     main.innerHTML += "<table><tr><th>Site</th><th>Username</th><th>Password</th><th>Edit</th><th>Delete</th></tr> </table>";
@@ -189,10 +189,21 @@
         return buildTableView();
       });
     });
-    _ref2 = table.getElementsByClassName('text-hidden');
-    _results = [];
+    _ref2 = newpass.getElementsByTagName("input");
     for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-      el = _ref2[_k];
+      input_element = _ref2[_k];
+      input_element.addEventListener("keypress", (function(l) {
+        return function(evt) {
+          if (evt.keyCode === 13) {
+            return newpass.getElementsByClassName("add")[0].click();
+          }
+        };
+      })(l));
+    }
+    _ref3 = table.getElementsByClassName('text-hidden');
+    _results = [];
+    for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+      el = _ref3[_l];
       el.addEventListener('click', function(evt) {
         return this.select();
       });
@@ -217,9 +228,7 @@
     evt.preventDefault();
     return get_url(db_url, function(data) {
       var err;
-      console.log("in");
       try {
-        console.log(window.database);
         password = document.getElementById("main-pass-input").value;
         window.database = decipher(password, data);
         return buildTableView();

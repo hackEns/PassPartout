@@ -148,6 +148,10 @@ buildTableView = () ->
 		console.log(window.database)
 		save () ->
 			buildTableView()
+	for input_element in newpass.getElementsByTagName("input")
+		input_element.addEventListener "keypress", do (l) -> (evt) ->
+			if evt.keyCode == 13
+				newpass.getElementsByClassName("add")[0].click()
 	
 	for el in table.getElementsByClassName('text-hidden')
 		el.addEventListener 'click', (evt) ->
@@ -175,9 +179,7 @@ document.getElementById("main-pass-form").addEventListener "submit", (evt) ->
 
 	# Download the passwords database
 	get_url db_url, (data) ->
-			console.log "in"
 			try
-				console.log window.database
 				password = document.getElementById("main-pass-input").value
 				window.database = decipher(password, data)
 				buildTableView()
