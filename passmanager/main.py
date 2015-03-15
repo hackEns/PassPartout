@@ -48,8 +48,14 @@ def create_app():
 		password = field.data
 		if len(password) < 6:
 			raise ValidationError(('Password must have at least 6 characters'))
+	
+	def username_validator(form, field):
+		""" Username must cont at least 3 alphanumeric characters long"""
+		username = field.data
+		if len(username) < 3:
+			raise ValidationError(_('Username must be at least 3 characters long'))
 
-	user_manager = UserManager(user_db_adapter, password_validator=password_validator)
+	user_manager = UserManager(user_db_adapter, password_validator=password_validator, username_validator=username_validator)
 	user_manager.init_app(app) # Initialize Flask-User
 
 	# A flask/sqlalchemy/python bug? anyway sqlalchemy complains in a weird error without this line
