@@ -8,11 +8,33 @@ from passmanager.db import init_db
 
 from wtforms.validators import ValidationError
 
+import sys
+import os.path
+
+
+def install_secret_key(app, filename='secret_key'):
+	"""Configure the SECRET_KEY from a file
+	in the instance directory.
+
+	If the file does not exist, print instructions
+	to create it from a shell with a random key,
+	then exit.
+
+	"""
+	filename = os.path.join(app.instance_path, filename)
+	try:
+		app.config['SECRET_KEY'] = str(open(filename, 'rb').read())
+	except IOError:
+		print('Error: No secret key. Create it with:')
+		if not os.path.isdir(os.path.dirname(filename)):
+			print('mkdir -p', os.path.dirname(filename))
+		print('head -c 24 /dev/urandom >', filename)
+		sys.exit(1)
+
 # Use a Class-based config to avoid needing a 2nd file
 # os.getenv() enables configuration through OS environment variables
 class ConfigClass(object):
 	# Flask settings
-	SECRET_KEY =			  os.getenv('SECRET_KEY',	   'THIS IS AN INSECURE SECRET')
 	SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',	 'sqlite:///../users.sqlite')
 	CSRF_ENABLED = True
 
@@ -37,6 +59,7 @@ def create_app():
 	# Setup Flask app and app.config
 	app = Flask(__name__)
 	app.config.from_object(__name__+'.ConfigClass')
+	install_secret_key(app)
 
 	# Initialize Flask extensions
 	mail = Mail(app)								# Initialize Flask-Mail
