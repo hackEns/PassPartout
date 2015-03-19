@@ -5,6 +5,14 @@ from flask import Flask
 from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter
 from passmanager import main
 import os
+import subprocess
+
+
+if not os.path.isdir("db"):
+    os.mkdir("db")
+    os.chdir("db")
+    subprocess.check_call(["git", "init", "."])
+    os.chdir("..")
 os.chdir("passmanager")
 
 app = Flask("main")
