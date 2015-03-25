@@ -22,3 +22,5 @@ Install
 Run "install_modules.sh" to install the required python modules and setup the git repository used for the keyrings.
 
 Then run "python run.py"
+
+WARNING: You *must* start run.py from the installation directory, and *not* when being in another directory (i.e. run.py must be at $PWD/run.py).
