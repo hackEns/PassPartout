@@ -13,13 +13,9 @@ if not os.path.isdir("db"):
     os.chdir("db")
     subprocess.check_call(["git", "init", "."])
     os.chdir("..")
-os.chdir("passmanager")
 
-app = Flask("main")
-app.config.from_object(main.ConfigClass)
+app,db, user_db_adapter, User, Role, user_manager = main.create_app()
 
-db, user_db_adapter, User, Role = init_db(app)
-user_manager = UserManager(user_db_adapter, app)	 # Initialize Flask-User
 
 user = User(username='root', active=True,
 	password=user_manager.hash_password('root'))

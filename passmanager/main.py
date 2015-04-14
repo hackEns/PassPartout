@@ -35,7 +35,6 @@ def install_secret_key(app, filename='secret_key'):
 # os.getenv() enables configuration through OS environment variables
 class ConfigClass(object):
 	# Flask settings
-	SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',	 'sqlite:///../users.sqlite')
 	CSRF_ENABLED = True
 
 	# Flask-Mail settings
@@ -59,6 +58,8 @@ def create_app():
 	# Setup Flask app and app.config
 	app = Flask(__name__)
 	app.config.from_object(__name__+'.ConfigClass')
+	app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + app.instance_path + os.sep + "users.sqlite"
+	print(app.config['SQLALCHEMY_DATABASE_URI'])
 	install_secret_key(app)
 
 	# Initialize Flask extensions
@@ -179,6 +180,6 @@ def create_app():
 		except FileNotFoundError:
 			return "{}"
 
-	return app
+	return app,db, user_db_adapter, User, Role, user_manager
 
 
