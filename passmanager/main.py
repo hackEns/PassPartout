@@ -4,6 +4,8 @@ from flask import Flask, render_template_string, render_template, request, redir
 from flask_mail import Mail
 from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter, roles_required, current_user
 
+from passmanager.utils import id_generator
+
 from passmanager.db import init_db
 
 from wtforms.validators import ValidationError
@@ -116,7 +118,18 @@ def create_app():
 				if role in user.roles:
 					user.roles.remove(role)
 			db.session.commit()
-		return render_template("grid.html", users=db.session.query(User), roles=db.session.query(Role))
+		return render_template("grid.html", users=db.session.query(User), roles=db.session.query(Role), user_reset_id = "-1", newpass = "")
+	
+	@app.route('/grid/reset/<user_id>')
+	@login_required
+	@roles_required('hacker')
+	def reset_grid(user_id):
+		user = db.session.query(User).filter(User.id==int(user_id)).first()
+		newpass = id_generator()
+		user.password = user_manager.hash_password(newpass)
+		db.session.commit()
+		return render_template("grid.html", users=db.session.query(User), roles=db.session.query(Role), newpass=newpass, user_reset_id=user_id)
+
 
 	@app.route('/new', methods=["POST", "GET"])
 	@login_required

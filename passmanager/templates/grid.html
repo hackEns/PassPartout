@@ -26,6 +26,16 @@
 				</form>
 				</td>
 			{% endfor %}
+			<td>
+				<a href="{{ url_for("grid")}}/reset/{{ i.id }}">
+				Reset password
+				</a>
+			</td>
+			{% if i.id == user_reset_id | int %}
+			<td>
+					Password reset to {{ newpass }}
+			</td>
+			{% endif %}
 		</tr>
 		{% endfor %}
 	</table>
