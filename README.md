@@ -19,7 +19,7 @@ Features
 
 Install
 -------
-Run "install_modules.sh" to install the required python modules and setup the git repository used for the keyrings.
+Run "init.sh" to install the required python modules and setup the git repository used for the keyrings.
 
 Then run "python run.py"
 
