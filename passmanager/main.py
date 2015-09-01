@@ -47,7 +47,7 @@ class ConfigClass(object):
 	MAIL_PORT =		   int(os.getenv('MAIL_PORT',			'465'))
 	MAIL_USE_SSL =		int(os.getenv('MAIL_USE_SSL',		 True))
 	USER_ENABLE_CONFIRM_EMAIL = False
-	USER_ENABLE_REGISTRATION = True
+	USER_ENABLE_REGISTRATION = False
 	USER_ENABLE_EMAIL = False
 
 	CAS_SERVER = "https://cas.eleves.ens.fr/"
