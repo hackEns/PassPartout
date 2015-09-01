@@ -50,6 +50,10 @@ class ConfigClass(object):
 	USER_ENABLE_REGISTRATION = True
 	USER_ENABLE_EMAIL = False
 
+	CAS_SERVER = "https://cas.eleves.ens.fr/"
+
+	CAS_SERVICE = "http://localhost:5000"
+
 	# Flask-User settings
 	USER_APP_NAME		= "PassManager"				# Used by email templates
 
