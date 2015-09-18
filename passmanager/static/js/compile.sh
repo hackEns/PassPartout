@@ -1,1 +1,1 @@
-coffee -c -w app.cs grid.cs create.cs 
+coffee -c -w app.coffee grid.coffee create.coffee 
